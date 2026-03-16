@@ -1,0 +1,346 @@
+@import url('https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #fafafa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #000000;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #dbdbdb;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+}
+
+.nav-container {
+    width: 100%;
+    max-width: 975px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo {
+    font-family: 'Grand Hotel', cursive;
+    font-size: 32px;
+    font-weight: 400;
+    color: #000000;
+    user-select: none;
+}
+
+/* Main Container */
+.main-container {
+    max-width: 470px;
+    margin: 90px auto 30px;
+    padding: 0;
+}
+
+/* Upload Section */
+.upload-section {
+    background-color: #ffffff;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.upload-header {
+    height: 42px;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #dbdbdb;
+    padding: 0 16px;
+    background: #fff;
+}
+
+.upload-header span {
+    flex: 1;
+    text-align: center;
+    margin-left: 28px;
+    /* Offset the button width to truly center the text */
+}
+
+/* Share Button */
+button#postBtn {
+    background-color: transparent;
+    color: #0095f6;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+}
+
+button#postBtn:disabled {
+    color: #b2dffc;
+    cursor: default;
+}
+
+button#postBtn:hover:not(:disabled) {
+    color: #00376b;
+}
+
+/* Upload Body */
+.upload-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    min-height: 300px;
+}
+
+.media-icon {
+    margin-bottom: 16px;
+}
+
+.upload-label {
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 24px;
+    color: #000000;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 7px 16px;
+    cursor: pointer;
+    background-color: #0095f6;
+    color: #ffffff;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.custom-file-upload:hover {
+    background-color: #1877f2;
+}
+
+/* Preview */
+.preview {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #000;
+    min-height: 300px;
+}
+
+.preview img,
+.preview video {
+    width: 100%;
+    max-height: 585px;
+    object-fit: cover;
+}
+
+/* Detection Result */
+#detection-result {
+    display: none;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.fake {
+    background-color: #fdf5f4;
+    color: #ed4956;
+}
+
+.real {
+    background-color: #f4fdf5;
+    color: #0095f6;
+}
+
+.no-face {
+    background-color: #fafafa;
+    color: #8e8e8e;
+}
+
+/* Feed & Posts */
+.post {
+    background-color: #ffffff;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    margin-bottom: 24px;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    padding: 14px;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 1px solid #dbdbdb;
+    object-fit: cover;
+    background: #fafafa;
+}
+
+.username {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000;
+    text-decoration: none;
+}
+
+.post>img,
+.post>video {
+    width: 100%;
+    display: block;
+    max-height: 585px;
+    object-fit: cover;
+    border-top: 1px solid #efefef;
+    border-bottom: 1px solid #efefef;
+    background-color: #000;
+}
+
+.actions {
+    padding: 14px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.like-btn {
+    cursor: pointer;
+    font-size: 24px;
+    color: #000000;
+    transition: transform 0.1s;
+    line-height: 1;
+}
+
+.like-btn:active {
+    transform: scale(0.9);
+    color: #8e8e8e;
+}
+
+.like-btn .fa-solid.fa-heart {
+    color: #ed4956;
+    animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.likes-count {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 8px;
+}
+
+.post-caption {
+    font-size: 14px;
+    color: #000000;
+}
+
+.post-caption .username {
+    margin-right: 4px;
+}
+
+/* Badges */
+.deepfake-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    width: fit-content;
+}
+
+.deepfake-badge i {
+    margin-right: 6px;
+    font-size: 14px;
+}
+
+.deepfake-badge.real {
+    background: #f4fdf5;
+    color: #0095f6;
+    border: 1px solid rgba(0, 149, 246, 0.2)
+}
+
+.deepfake-badge.fake {
+    background: #fdf5f4;
+    color: #ed4956;
+    border: 1px solid rgba(237, 73, 86, 0.2)
+}
+
+.deepfake-badge.noface {
+    background: #fafafa;
+    color: #8e8e8e;
+    border: 1px solid #dbdbdb;
+}
+
+/* Spinner */
+.spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(0, 149, 246, 0.2);
+    border-top-color: #0095f6;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Media Queries for very small screens */
+@media (max-width: 470px) {
+    .main-container {
+        width: 100%;
+    }
+
+    .post,
+    .upload-section {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+}

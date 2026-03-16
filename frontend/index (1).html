@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MiniGram</title>
+
+<!-- Fonts & Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+        <div class="logo">MiniGram</div>
+    </div>
+</header>
+
+<div class="main-container">
+
+    <!-- Upload Section -->
+    <div class="upload-section">
+        <div class="upload-header">
+            <span>New post</span>
+            <button id="postBtn" onclick="createPost()" disabled>Share</button>
+        </div>
+        
+        <div class="upload-body" id="uploadBody">
+            <svg aria-label="Icon to represent media such as images or videos" class="media-icon" color="#262626" fill="#262626" height="77" role="img" viewBox="0 0 97.6 77.3" width="96"><path d="M16.3 24h.3c2.8-.2 4.9-2.6 4.8-5.4-.2-2.8-2.6-4.9-5.4-4.8s-4.9 2.6-4.8 5.4c.1 2.7 2.4 4.8 5.1 4.8zm-2.4-7.2c.5-.6 1.3-1 2.1-1h.2c1.7 0 3.1 1.4 3.1 3.1 0 1.7-1.4 3.1-3.1 3.1-1.7 0-3.1-1.4-3.1-3.1 0-.8.3-1.5.8-2.1z" fill="currentColor"></path><path d="M84.7 18.4L58 16.9l-.2-3c-.3-5.7-5.2-10.1-11-9.8L12.9 6c-5.7.3-10.1 5.3-9.8 11L5 51v.8c.7 5.2 5.1 9.1 10.3 9.1h.6l21.7-1.2v.6c-.3 5.7 4 10.7 9.8 11l34 2h.6c5.5 0 10.1-4.3 10.4-9.8l2-34c.4-5.8-4-10.8-9.7-11.1zM7.2 10.8C8.7 9.1 10.8 8.1 13 8l34-1.9c4.6-.3 8.6 3.3 8.9 7.9l.2 2.8-5.3-.3c-5.7-.3-10.7 4-11 9.8l-.6 9.5-9.5 10.7c-.2.3-.6.4-1 .5-.4 0-.7-.1-1-.4l-7.8-7c-1.4-1.3-3.5-1.1-4.8.3L7 49 5.2 17c-.2-2.3.6-4.5 2-6.2zm8.7 48c-4.3.2-8.1-2.8-8.8-7.1l9.4-10.5c.2-.3.6-.4 1-.5.4 0 .7.1 1 .4l7.8 7c1.3 1.2 3.3 1.1 4.5-.3l11.1-12.3C42.8 34.4 45 33.3 47 33.4l11.1.6c-4.6.3-8.6-3.3-8.9-7.9l-.2-2.8 5.3.3c5.7.3 10.7-4 11-9.8l.6-9.5 9.5-10.7c.2-.3.6-.4 1-.5.4 0 .7.1 1 .4l7.8 7c1.3 1.2 3.3 1.1 4.5-.3l11.1-12.3C40.6 36.3 42.8 35.1 45 35l11.1.6v-1.6zM89.7 59.9c-.2 4.4-4 8-8.4 8h-.6l-34-2c-4.6-.3-8.2-4.2-7.9-8.8l2-34c.2-4.4 4-8 8.4-8h.6l34 2c4.6.3 8.2 4.2 7.9 8.8l-2 34z" fill="currentColor"></path></svg>
+            <div class="upload-label">Drag photos and videos here</div>
+            <label class="custom-file-upload">
+                Select from computer
+                <input type="file" id="mediaInput" accept="image/*,video/mp4" style="display: none;">
+            </label>
+        </div>
+
+        <!-- The detection banner is placed above the preview so it mimics a top app notice -->
+        <div id="detection-result"></div>
+
+        <div class="preview" id="preview" style="display: none;"></div>
+        
+    </div>
+
+    <!-- Feed Section -->
+    <div class="feed" id="feed"></div>
+
+</div>
+
+<script>
+const BACKEND_URL = "http://localhost:8000";
+
+const mediaInput    = document.getElementById("mediaInput");
+const preview       = document.getElementById("preview");
+const resultBox     = document.getElementById("detection-result");
+const postBtn       = document.getElementById("postBtn");
+const uploadBody    = document.getElementById("uploadBody");
+
+let selectedFile    = null;
+let detectionResult = null;
+
+mediaInput.addEventListener("change", async function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    preview.innerHTML = "";
+    resultBox.style.display = "none";
+    resultBox.className = "";
+    resultBox.innerHTML = "";
+
+    selectedFile = file;
+    detectionResult = null;
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        let media;
+        if (file.type.startsWith("image")) {
+            media = document.createElement("img");
+        } else if (file.type === "video/mp4") {
+            media = document.createElement("video");
+            media.controls = true;
+        } else {
+            alert("Only image or MP4 allowed");
+            postBtn.disabled = true;
+            return;
+        }
+
+        media.src = e.target.result;
+        preview.appendChild(media);
+        
+        // Hide upload placeholder and show preview
+        uploadBody.style.display = "none";
+        preview.style.display = "flex";
+        
+        postBtn.disabled = false;
+    };
+    reader.readAsDataURL(file);
+
+    if (file.type === "video/mp4") {
+        await runDeepfakeDetection(file);
+    }
+});
+
+async function runDeepfakeDetection(file) {
+    resultBox.style.display = "block";
+    resultBox.className = "";
+    resultBox.innerHTML = '<span class="spinner"></span> Analysing video for deepfake…';
+
+    postBtn.disabled = true;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+        const response = await fetch(`${BACKEND_URL}/predict`, {
+            method: "POST",
+            body: formData
+        });
+
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.detail || `Server error ${response.status}`);
+        }
+
+        const data = await response.json();
+        detectionResult = data;
+        showResult(data);
+
+    } catch (err) {
+        resultBox.className = "no-face";
+        resultBox.innerHTML = `⚠️ Detection failed: ${err.message}`;
+        resultBox.style.display = "block";
+    } finally {
+        postBtn.disabled = false;
+    }
+}
+
+function showResult(data) {
+    const pred = (data.prediction || "").toUpperCase();
+    const frames = data.frames_used ?? "—";
+
+    if (pred === "NO FACE DETECTED" || frames === 0) {
+        resultBox.className = "no-face";
+        resultBox.innerHTML = `⚠️ No face detected in the video — cannot determine if it's a deepfake.`;
+    } else if (pred === "FAKE") {
+        resultBox.className = "fake";
+        resultBox.innerHTML = "🚨 AI Deepfake Detected";
+    } else {
+        resultBox.className = "real";
+        resultBox.innerHTML = `✅ Authentic Video Verified`;
+    }
+    resultBox.style.display = "block";
+}
+
+function createPost() {
+    if (!selectedFile) {
+        alert("Please select media first.");
+        return;
+    }
+
+    const post = document.createElement("div");
+    post.className = "post";
+
+    /* post header */
+    const header = document.createElement("div");
+    header.className = "post-header";
+    
+    post.appendChild(header);
+
+    const media = preview.firstChild ? preview.firstChild.cloneNode(true) : null;
+    if (media) post.appendChild(media);
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    if (detectionResult) {
+        const pred = (detectionResult.prediction || "").toUpperCase();
+        const badge = document.createElement("span");
+        badge.className = "deepfake-badge";
+
+        if (pred === "NO FACE DETECTED" || detectionResult.frames_used === 0) {
+            badge.classList.add("noface");
+            badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> No Face Detected`;
+        } else if (pred === "FAKE") {
+            badge.classList.add("fake");
+            badge.innerHTML = `<i class="fa-solid fa-robot"></i> AI Deepfake`;
+        } else {
+            badge.classList.add("real");
+            badge.innerHTML = `<i class="fa-solid fa-circle-check"></i>Authentic` ;
+        }
+        actions.appendChild(badge);
+    }
+
+    const actionButtons = document.createElement("div");
+    actionButtons.className = "action-buttons";
+
+    const likeBtn = document.createElement("div");
+    likeBtn.className = "like-btn";
+    likeBtn.innerHTML = `<i class="fa-regular fa-heart"></i>`;
+    
+    // extra icon just for UI looks
+    const commentBtn = document.createElement("div");
+    commentBtn.className = "like-btn";
+    commentBtn.style.cursor = "default";
+    commentBtn.innerHTML = `<i class="fa-regular fa-comment"></i>`;
+    
+    const sendBtn = document.createElement("div");
+    sendBtn.className = "like-btn";
+    sendBtn.style.cursor = "default";
+    sendBtn.innerHTML = `<i class="fa-regular fa-paper-plane"></i>`;
+
+    actionButtons.appendChild(likeBtn);
+    actionButtons.appendChild(commentBtn);
+    actionButtons.appendChild(sendBtn);
+
+    const likesCount = document.createElement("div");
+    likesCount.className = "likes-count";
+    likesCount.innerText = "0 likes";
+
+    let likes = 0;
+    let liked = false;
+
+    likeBtn.onclick = function () {
+        liked = !liked;
+        if (liked) {
+            likes++;
+            likeBtn.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+        } else {
+            likes--;
+            likeBtn.innerHTML = `<i class="fa-regular fa-heart"></i>`;
+        }
+        likesCount.innerText = likes + (likes === 1 ? " like" : " likes");
+    };
+
+    actions.appendChild(actionButtons);
+    actions.appendChild(likesCount);
+
+    // caption
+    const caption = document.createElement("div");
+    caption.className = "post-caption";
+    caption.innerHTML = `<span class="username">user_${Math.floor(Math.random() * 9999)}</span> Just sharing this new post! ✨`;
+    actions.appendChild(caption);
+
+    post.appendChild(actions);
+
+    document.getElementById("feed").prepend(post);
+
+    // Reset UI
+    preview.innerHTML = "";
+    preview.style.display = "none";
+    
+    uploadBody.style.display = "flex";
+    mediaInput.value = "";
+    selectedFile = null;
+    detectionResult = null;
+
+    resultBox.style.display = "none";
+    resultBox.innerHTML = "";
+    postBtn.disabled = true;
+}
+</script>
+
+</body>
+</html>
