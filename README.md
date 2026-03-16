@@ -1,8 +1,3 @@
-Here is a **clean, professional README.md** suitable for **GitHub, hackathons, or project submissions**. It explains the project, architecture, accuracy, and your folder structure clearly.
-
-You can copy this directly into a `README.md` file.
-
----
 
 # Deepfake Face Detection System
 
