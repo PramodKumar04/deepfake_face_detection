@@ -257,14 +257,9 @@ Deepfake detection has multiple important use cases:
 * Journalism and misinformation detection
 * Digital forensics
 * Identity protection
-* Cybersecurity
+
 
 ---
 
 # Conclusion
 
-This project demonstrates a practical implementation of **deepfake face detection using deep learning**. With an accuracy of approximately **80% and an AUC score of 0.8843**, the system shows promising capability in identifying manipulated facial images.
-
-The modular architecture allows easy scalability and integration into larger systems for combating AI-generated misinformation.
-
-Those upgrades make the repo look **10× more professional**.
